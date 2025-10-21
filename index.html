@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Fondation Doudou Fwamba</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Lightbox2 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Leaflet.js -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <style>
+    :root {
+      --primary: #004080;
+      --secondary: #003366;
+      --accent: #d4af37;
+      --light: #f4f4f4;
+      --dark: #333;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      background: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      position: relative;
+      padding-bottom: 10px;
+      margin-bottom: 2rem;
+    }
+
+    h2:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 80px;
+      height: 4px;
+      background: var(--accent);
+    }
+
+    h3 {
+      font-size: 1.8rem;
+      color: var(--secondary);
+    }
+
+    h4 {
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    header {
+      background: linear-gradient(rgba(0, 64, 128, 0.9), rgba(0, 51, 102, 0.9)), url('https://via.placeholder.com/1920x1080') center/cover no-repeat;
+      color: white;
+      padding: 80px 20px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    #slogan {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      opacity: 0.9;
+    }
+
+    .top-bar {
+      background: var(--dark);
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .social-icons a {
+      color: white;
+      margin: 0 8px;
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .social-icons a:hover {
+      color: var(--accent);
+    }
+
+    .top-right-buttons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .top-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .top-btn:hover {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    nav {
+      background: var(--secondary);
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-links li {
+      position: relative;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      padding: 15px 20px;
+      display: block;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--accent);
+    }
+
+    .lang-select {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-left: 10px;
+    }
+
+    section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-alt {
+      background: white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      margin: 40px auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: var(--transition);
+      margin-bottom: 30px;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .timeline:before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--primary);
+      margin-left: -1px;
+    }
+
+    .timeline-item {
+      padding: 20px 40px;
+      position: relative;
+      width: 50%;
+      clear: both;
+    }
+
+    .timeline-item:nth-child(odd) {
+      left: 0;
+      text-align: right;
+    }
+
+    .timeline-item:nth-child(even) {
+      left: 50%;
+    }
+
+    .timeline-item:after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 50%;
+      top: 30px;
+    }
+
+    .timeline-item:nth-child(odd):after {
+      right: -8px;
+    }
+
+    .timeline-item:nth-child(even):after {
+      left: -8px;
+    }
+
+    .timeline-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: var(--transition);
+      height: 200px;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.03);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.1);
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .news-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: var(--transition);
+    }
+
+    .news-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .news-image {
+      height: 180px;
+      overflow: hidden;
+    }
+
+    .news-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .news-card:hover .news-image img {
+      transform: scale(1.05);
+    }
+
+    .news-content {
+      padding: 20px;
+    }
+
+    .news-date {
+      color: #777;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    form input, form textarea, form select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    form input:focus, form textarea:focus, form select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(0, 64, 128, 0.2);
+    }
+
+    #mapid {
+      height: 400px;
+      margin-top: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    footer {
+      background: var(--dark);
+      color: white;
+      padding: 60px 20px 30px;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      text-align: left;
+    }
+
+    .footer-section h3 {
+      color: var(--accent);
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+    }
+
+    .footer-section p, .footer-section a {
+      color: #ccc;
+      margin-bottom: 10px;
+      display: block;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-section a:hover {
+      color: var(--accent);
+    }
+
+    .copyright {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #444;
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .delay-1 {
+      animation-delay: 0.2s;
+    }
+
+    .delay-2 {
+      animation-delay: 0.4s;
+    }
+
+    .delay-3 {
+      animation-delay: 0.6s;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-container {
+        flex-direction: column;
+        padding: 15px 20px;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 15px;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        padding: 12px 0;
+        text-align: center;
+      }
+
+      .top-bar {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .timeline:before {
+        left: 30px;
+      }
+
+      .timeline-item {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 0;
+      }
+
+      .timeline-item:nth-child(even) {
+        left: 0;
+      }
+
+      .timeline-item:after {
+        left: 22px !important;
+      }
+
+      .timeline-item:nth-child(odd) {
+        text-align: left;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      section {
+        padding: 60px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="social-icons">
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-twitter"></i></a>
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+  </div>
+  <div class="top-right-buttons">
+    <button class="top-btn" id="search-btn"><i class="fas fa-search"></i> Recherche</button>
+    <button class="top-btn" id="donate-btn"><i class="fas fa-hand-holding-heart"></i> Faire un don</button>
+    <button class="top-btn" id="contact-btn"><i class="fas fa-envelope"></i> Contact</button>
+  </div>
+</div>
+
+<header>
+  <div class="header-content">
+    <h1 class="fade-in">Fondation Doudou Fwamba</h1>
+    <p id="slogan" class="fade-in delay-1">Pour l'éducation, la santé et la dignité en RDC</p>
+    <a href="#mission" class="btn fade-in delay-2">Découvrir notre mission</a>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-container">
+    <ul class="nav-links">
+      <li><a href="#accueil">Accueil</a></li>
+      <li><a href="#apropos">À propos</a></li>
+      <li><a href="#mission">Mission</a></li>
+      <li><a href="#activites">Activités</a></li>
+      <li><a href="#actualites">Actualités</a></li>
+      <li><a href="#medias">Médias</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <select id="lang" class="lang-select">
+      <option value="fr">FR</option>
+      <option value="en">EN</option>
+    </select>
+  </div>
+</nav>
+
+<section id="accueil">
+  <h2>Bienvenue à la Fondation Doudou Fwamba</h2>
+  <div class="card fade-in">
+    <p>La Fondation Doudou Fwamba est une organisation à but non lucratif engagée dans le développement social et économique en République Démocratique du Congo. Sous l'impulsion de Doudou Roussel Fwamba Likunde Li Botayi, Ministre des Finances de la RDC, la fondation œuvre pour l'autonomisation des populations vulnérables, particulièrement à Kisangani et dans ses environs.</p>
+    <p>Notre approche combine interventions d'urgence et programmes de développement durable dans les domaines de l'éducation, la santé, l'autonomisation économique et la protection sociale.</p>
+  </div>
+</section>
+
+<section id="apropos" class="section-alt">
+  <h2>À propos de Doudou Fwamba</h2>
+  
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content card">
+        <h3>Parcours académique</h3>
+        <p>Doudou Roussel Fwamba Likunde Li Botayi possède un parcours académique impressionnant avec des formations en économie, finances et gestion publique. Son expertise technique et sa compréhension des enjeux économiques lui ont valu sa nomination au poste stratégique de Ministre des Finances.</p>
+      </div>
+    </div>
+    
+    <div class="timeline-item">
+      <div class="timeline-content card">
+        <h3>Nomination ministérielle</h3>
+        <p>En mai 2024, Doudou Fwamba a été nommé Ministre des Finances de la République Démocratique du Congo, une décision saluée par les observateurs pour son profil technique et son intégrité reconnue.</p>
+      </div>
+    </div>
+    
+    <div class="timeline-item">
+      <div class="timeline-content card">
+        <h3>Fonctions ministérielles</h3>
+        <p>En tant que Ministre des Finances, Doudou Fwamba a entrepris des réformes importantes pour assainir les finances publiques, renforcer la transparence et restaurer la confiance des partenaires internationaux.</p>
+      </div>
+    </div>
+    
+    <div class="timeline-item">
+      <div class="timeline-content card">
+        <h3>Engagements internationaux</h3>
+        <p>Lors des Assemblées annuelles du FMI à Washington, Doudou Fwamba a plaidé pour un financement de 500 millions de dollars pour soutenir les projets de développement en RDC. Il a également renforcé les engagements avec le FMI et la Banque mondiale pour soutenir les réformes économiques.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mission">
+  <h2>Notre mission</h2>
+  <div class="card fade-in">
+    <h3>Redonner confiance et crédibilité</h3>
+    <p>Inspirée par la rigueur et la transparence dont fait preuve Doudou Fwamba dans ses fonctions ministérielles, la fondation applique ces mêmes principes dans toutes ses actions. Notre mission est de redonner confiance et crédibilité aux populations vulnérables par des programmes structurés et transparents.</p>
+    
+    <h4>Domaines d'intervention</h4>
+    <ul>
+      <li><strong>Éducation :</strong> Soutien scolaire, construction d'écoles, distribution de fournitures</li>
+      <li><strong>Santé :</strong> Dons d'équipements médicaux, campagnes de sensibilisation, soutien aux établissements de santé</li>
+      <li><strong>Autonomisation économique :</strong> Programmes de formation professionnelle, microcrédit, soutien aux entrepreneurs</li>
+      <li><strong>Protection sociale :</strong> Aide aux personnes vulnérables, orphelins, femmes et enfants</li>
+    </ul>
+  </div>
+</section>
+
+<section id="activites" class="section-alt">
+  <h2>Nos activités</h2>
+  
+  <div class="news-grid">
+    <div class="news-card fade-in">
+      <div class="news-image">
+        <img src="https://via.placeholder.com/400x250" alt="Soutien à la santé">
+      </div>
+      <div class="news-content">
+        <h3>Soutien à la santé à Kisangani</h3>
+        <p class="news-date">Octobre 2023</p>
+        <p>La Fondation Doudou Fwamba a fait un don vital d'équipements médicaux aux établissements de santé de Kisangani, renforçant ainsi les capacités de soins dans la région.</p>
+        <a href="#" class="btn btn-outline">En savoir plus</a>
+      </div>
+    </div>
+    
+    <div class="news-card fade-in delay-1">
+      <div class="news-image">
+        <img src="https://via.placeholder.com/400x250" alt="Autonomisation des femmes">
+      </div>
+      <div class="news-content">
+        <h3>Autonomisation des femmes</h3>
+        <p class="news-date">Septembre 2023</p>
+        <p>Programme d'autonomisation des femmes de Kisangani à travers des formations en entrepreneuriat et l'accès au microcrédit pour développer des activités génératrices de revenus.</p>
+        <a href="#" class="btn btn-outline">En savoir plus</a>
+      </div>
+    </div>
+    
+    <div class="news-card fade-in delay-2">
+      <div class="news-image">
+        <img src="https://via.placeholder.com/400x250" alt="Soutien scolaire">
+      </div>
+      <div class="news-content">
+        <h3>Soutien scolaire</h3>
+        <p class="news-date">Août 2023</p>
+        <p>Distribution de kits scolaires et mise en place de programmes de soutien scolaire pour les enfants défavorisés de Kisangani et ses environs.</p>
+        <a href="#" class="btn btn-outline">En savoir plus</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="actualites">
+  <h2>Actualités et réseaux sociaux</h2>
+  
+  <div class="card fade-in">
+    <h3>Discours à Washington</h3>
+    <p>Lors de son discours à Washington, Doudou Fwamba a présenté une vision claire pour les finances publiques de la RDC, plaidant pour un financement de 500 millions de dollars pour soutenir des projets stratégiques de développement.</p>
+    
+    <h3>Engagements avec le FMI et la Banque mondiale</h3>
+    <p>Le ministre a renforcé les engagements de la RDC avec le FMI et la Banque mondiale, démontrant la volonté du gouvernement de mettre en œuvre des réformes structurelles pour assainir les finances publiques.</p>
+    
+    <h3>Rigueur et transparence</h3>
+    <p>Doudou Fwamba est reconnu comme le ministre qui redonne confiance et crédibilité aux finances publiques par la rigueur et la transparence dans la gestion des ressources de l'État.</p>
+  </div>
+  
+  <div class="social-feed">
+    <h3>Suivez-nous sur les réseaux sociaux</h3>
+    <div class="social-icons" style="text-align: center; margin: 30px 0;">
+      <a href="#" style="font-size: 2rem; margin: 0 15px;"><i class="fab fa-facebook"></i></a>
+      <a href="#" style="font-size: 2rem; margin: 0 15px;"><i class="fab fa-twitter"></i></a>
+      <a href="#" style="font-size: 2rem; margin: 0 15px;"><i class="fab fa-instagram"></i></a>
+      <a href="#" style="font-size: 2rem; margin: 0 15px;"><i class="fab fa-youtube"></i></a>
+    </div>
+  </div>
+</section>
+
+<section id="medias" class="section-alt">
+  <h2>Galerie médias</h2>
+  
+  <div class="gallery">
+    <a href="https://via.placeholder.com/800x600" data-lightbox="galerie" data-title="Distribution de kits scolaires" class="gallery-item">
+      <img src="https://via.placeholder.com/300x200" alt="Distribution de kits">
+    </a>
+    <a href="https://via.placeholder.com/800x600" data-lightbox="galerie" data-title="Soutien scolaire" class="gallery-item">
+      <img src="https://via.placeholder.com/300x200" alt="Soutien scolaire">
+    </a>
+    <a href="https://via.placeholder.com/800x600" data-lightbox="galerie" data-title="Dons médicaux" class="gallery-item">
+      <img src="https://via.placeholder.com/300x200" alt="Dons médicaux">
+    </a>
+    <a href="https://via.placeholder.com/800x600" data-lightbox="galerie" data-title="Formation professionnelle" class="g
